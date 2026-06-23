@@ -1,1 +1,3 @@
 gotypist
+*.exe
+.gotypist.stats
