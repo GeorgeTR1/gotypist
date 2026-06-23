@@ -6,6 +6,8 @@ import (
 	"flag"
 	"strings"
 	"time"
+	"os"
+	"path/filepath"
 )
 
 func Init(args []string, env map[string]string) (State, []Command) {
@@ -43,8 +45,12 @@ func Init(args []string, env map[string]string) (State, []Command) {
 		})
 	}
 
-	home, _ := env["HOME"]
-	state.Statsfile = home + "/.gotypist.stats"
+	exe, err := os.Executable()
+	if err != nil {
+		return State{}, []Command{Exit{Status: 1, GoodbyeMessage: err.Error()}}
+	}
+
+	state.Statsfile = filepath.Join(filepath.Dir(exe), ".gotypist.stats")
 
 	return state, append(commands,
 		ReadFile{
